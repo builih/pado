@@ -33,11 +33,11 @@ from typing import Literal
 
 
 class Material:
-    def __init__(self, material_name: Literal["PDMS", "FUSED_SILICA", "VACUUM"]):
+    def __init__(self, material_name: Literal["PDMS", "FUSED_SILICA", "VACUUM", "NOA61"]):
         """Create optical material instance with specified refractive index.
 
         Args:
-            material_name (str): Material name: PDMS, FUSED_SILICA, or VACUUM
+            material_name (str): Material name: PDMS, FUSED_SILICA, VACUUM, or NOA61
 
         Examples:
             >>> glass = Material("FUSED_SILICA")
@@ -71,7 +71,12 @@ class Material:
                 + 0.8974794 / (1 - (9.896161 / wvl_um) ** 2)
             )
             # Source: https://refractiveindex.info/?shelf=glass&book=fused_silica&page=Malitson
-        
+
+        if self.material_name == "NOA61":
+            wvl_um: float = wvl_nm * 1e-3
+            # n = 1.5375 + 0.00829045 * λ^−2 − 0.000211046 * λ^−4, λ in micrometers
+            return 1.5375 + 0.00829045 * (wvl_um ** -2) - 0.000211046 * (wvl_um ** -4)
+
         if self.material_name == "VACUUM":
             return 1.0
         
